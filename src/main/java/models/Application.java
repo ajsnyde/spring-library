@@ -1,5 +1,10 @@
 package models;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +26,8 @@ public class Application {
   public CommandLineRunner demo(BookRepo repository) {
     return (args) -> {
       Repos.books = repository;
+      loadBooks("src/main/resources/sampleData/tgb_1.csv");
+      loadBooks("src/main/resources/sampleData/tgb_2.csv");
       repository.save(new Book("1234567890", "Title1", "Author1"));
       repository.save(new Book("1234567891", "Title2", "Author2"));
       repository.save(new Book("1234567892", "Title3", "Author3"));
@@ -46,5 +53,34 @@ public class Application {
       }
       log.info("");
     };
+  }
+
+  public void loadBooks(String file) {
+
+    BufferedReader br = null;
+    String line = "";
+    String cvsSplitBy = ",";
+
+    try {
+      br = new BufferedReader(new FileReader(file));
+      while ((line = br.readLine()) != null) {
+        // use comma as separator
+        String[] book = line.split(cvsSplitBy);
+        Repos.books.save(new Book("1234567890", book[0], book[1]));
+      }
+
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      if (br != null) {
+        try {
+          br.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 }
