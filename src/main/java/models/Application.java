@@ -66,7 +66,7 @@ public class Application {
       while ((line = br.readLine()) != null) {
         // use comma as separator
         String[] book = line.split(cvsSplitBy);
-        Repos.books.save(new Book("1234567890", book[0], book[1]));
+        Repos.books.save(new Book(((long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L) + "", book[1], book[2]));
       }
 
     } catch (FileNotFoundException e) {
