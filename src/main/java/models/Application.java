@@ -14,12 +14,13 @@ public class Application {
   private static final Logger log = LoggerFactory.getLogger(Application.class);
 
   public static void main(String[] args) {
-    SpringApplication.run(Application.class);
+    SpringApplication.run(Application.class, args);
   }
 
   @Bean
   public CommandLineRunner demo(BookRepo repository) {
     return (args) -> {
+      Repos.books = repository;
       repository.save(new Book("1234567890", "Title1", "Author1"));
       repository.save(new Book("1234567891", "Title2", "Author2"));
       repository.save(new Book("1234567892", "Title3", "Author3"));
