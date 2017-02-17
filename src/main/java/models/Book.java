@@ -1,11 +1,20 @@
 package models;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+//Coincidentally found this after I made this class: https://hellokoding.com/jpa-one-to-many-relationship-mapping-example-with-spring-boot-maven-and-mysql/
 @Entity
+@Table(name = "books")
 public class Book {
 
   @Id
@@ -14,6 +23,9 @@ public class Book {
   private String author;
   private String title;
   private String isbn;
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @ElementCollection(targetClass = Checkout.class)
+  private List<Checkout> checkouts;
 
   protected Book() {
   }
@@ -55,5 +67,9 @@ public class Book {
 
   public void setIsbn(String isbn) {
     this.isbn = isbn;
+  }
+
+  public List<Checkout> getCheckouts() {
+    return checkouts;
   }
 }

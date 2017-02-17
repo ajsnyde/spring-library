@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-
+import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +12,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @SpringBootApplication
 public class Application {
@@ -23,9 +25,20 @@ public class Application {
   }
 
   @Bean
-  public CommandLineRunner demo(BookRepo repository) {
+  public CommandLineRunner demo(BookRepo repository, LibraryUserRepo userRepo) {
     return (args) -> {
+
+      System.out.println(userRepo.findAll());
       Repos.books = repository;
+      Repos.users = userRepo;
+
+      ArrayList<GrantedAuthority> admin = new ArrayList<GrantedAuthority>();
+      admin.add(new SimpleGrantedAuthority("ADMIN"));
+      ArrayList<GrantedAuthority> guest = new ArrayList<GrantedAuthority>();
+      guest.add(new SimpleGrantedAuthority("USER"));
+      Repos.users.save(new LibraryUser("asdf", "asdf", admin));
+      Repos.users.save(new LibraryUser("test", "test", guest));
+
       loadBooks("src/main/resources/sampleData/tgb_1.csv");
       loadBooks("src/main/resources/sampleData/tgb_2.csv");
       repository.save(new Book("1234567890", "Title1", "Author1"));
